@@ -1,0 +1,58 @@
+import { Component, inject, signal } from '@angular/core';
+
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+
+import { Router } from '@angular/router';
+
+import { AuthService } from '../../../core/services/auth.service';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [ReactiveFormsModule],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
+})
+export class LoginComponent {
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+
+  readonly loading = signal(false);
+  readonly errorMessage = signal('');
+
+  readonly form = this.fb.nonNullable.group({
+    email: ['', [Validators.required, Validators.email]],
+
+    password: ['', [Validators.required]],
+  });
+
+  submit(): void {
+    this.errorMessage.set('');
+
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    this.loading.set(true);
+
+    this.authService.login(this.form.getRawValue()).subscribe({
+      next: (response) => {
+        this.loading.set(false);
+
+        // Temporary routing.
+        // We will replace this with role-based routing.
+        this.router.navigate(['/']);
+      },
+
+      error: (error) => {
+        this.loading.set(false);
+
+        this.errorMessage.set(
+          error?.error?.message ?? error?.error ?? 'Login failed. Please check your credentials.',
+        );
+      },
+    });
+  }
+}
