@@ -6,5 +6,6 @@ export interface User {
   phoneNumber?: string | null;
   firstName: string;
   lastName: string;
-  accountStatus: AccountStatus | string;
+  role?: 'Owner' | 'Tenant' | string;
+  accountStatus?: AccountStatus | string;
 }

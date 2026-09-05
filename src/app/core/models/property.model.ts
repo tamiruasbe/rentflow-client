@@ -7,7 +7,7 @@ export interface Property {
   propertyType: string;
   address: string;
   city: string;
-  amenities: string[];
+  amenities: string;
   status: PropertyStatus | string;
   createdAtUtc: string;
   updatedAtUtc?: string | null;
@@ -33,7 +33,7 @@ export interface CreatePropertyRequest {
   propertyType: string;
   address: string;
   city: string;
-  amenities: string[];
+  amenities: string;
 }
 
 export interface UpdatePropertyRequest {
@@ -42,5 +42,5 @@ export interface UpdatePropertyRequest {
   propertyType: string;
   address: string;
   city: string;
-  amenities: string[];
+  amenities: string;
 }

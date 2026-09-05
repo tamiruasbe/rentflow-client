@@ -6,6 +6,7 @@ export interface AdminUser {
   phoneNumber?: string | null;
   firstName: string;
   lastName: string;
+  role: 'Admin' | 'Owner' | 'Tenant' | string;
   accountStatus: AccountStatus | string;
   createdAtUtc: string;
   updatedAtUtc?: string | null;

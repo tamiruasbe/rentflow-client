@@ -2,14 +2,14 @@ import { Component, inject, signal } from '@angular/core';
 
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -41,18 +41,31 @@ export class LoginComponent {
       next: (response) => {
         this.loading.set(false);
 
-        // Temporary routing.
-        // We will replace this with role-based routing.
-        this.router.navigate(['/']);
+        const role = response.user.role?.toLowerCase();
+        const destination = role === 'admin' ? '/admin' : role === 'owner' ? '/owner' : '/tenant';
+        this.router.navigate([destination]);
       },
 
       error: (error) => {
         this.loading.set(false);
 
-        this.errorMessage.set(
-          error?.error?.message ?? error?.error ?? 'Login failed. Please check your credentials.',
-        );
+        this.errorMessage.set(this.getLoginError(error));
       },
     });
+  }
+
+  private getLoginError(error: { error?: unknown }): string {
+    if (typeof error?.error === 'string') {
+      return error.error;
+    }
+
+    if (typeof error?.error === 'object' && error.error !== null && 'message' in error.error) {
+      const message = (error.error as { message?: unknown }).message;
+      if (typeof message === 'string') {
+        return message;
+      }
+    }
+
+    return 'Login failed. Please check your credentials.';
   }
 }

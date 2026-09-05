@@ -19,7 +19,7 @@ export const roleGuard = (allowedRoles: string[]): CanActivateFn => {
     // once login response is extended to include it.
     const role = localStorage.getItem('rentflow_role');
 
-    if (role && allowedRoles.includes(role)) {
+    if (role && allowedRoles.some((allowedRole) => allowedRole.toLowerCase() === role.toLowerCase())) {
       return true;
     }
 

@@ -1,0 +1,16 @@
+<header class="topbar"><div class="page-container nav"><strong>RentFlow Tenant</strong><div><a routerLink="/">Browse listings</a><button class="link-button" (click)="logout()">Sign out</button></div></div></header>
+<main class="page-container page">
+  <div><h1>Find a rental home</h1><p class="muted">Browse published properties and review your existing application.</p></div>
+  @if (loading()) { <div class="loading">Loading listings...</div> }
+  <section class="property-grid">
+    @for (property of properties(); track property.id) {
+      <article class="card"><p class="eyebrow">{{ property.propertyType }}</p><h2>{{ property.name }}</h2><p class="muted">{{ property.city }} · {{ property.address }}</p><a class="btn btn-primary" [routerLink]="['/properties', property.id]">View details</a></article>
+    }
+  </section>
+  <section class="lookup-grid">
+    <form class="card" (submit)="$event.preventDefault(); loadApplication()"><h2>Application lookup</h2><p class="muted">Review an application linked to your account.</p><input class="form-control" [value]="applicationId" (input)="applicationId = $any($event.target).value" placeholder="Application ID"><button class="btn btn-secondary" type="submit">Load application</button>
+      @if (application(); as item) { <div class="result"><strong>Status: {{ item.status }}</strong><span>Move-in: {{ item.preferredMoveInDate }}</span><span>{{ item.message }}</span></div> }
+    </form>
+  </section>
+  @if (lookupError()) { <div class="alert error">{{ lookupError() }}</div> }
+</main>

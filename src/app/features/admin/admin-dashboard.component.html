@@ -1,0 +1,18 @@
+<header class="topbar"><div class="page-container nav"><strong>RentFlow Admin</strong><div><a routerLink="/">Listings</a><button class="link-button" (click)="logout()">Sign out</button></div></div></header>
+<main class="page-container page">
+  <div><h1>User administration</h1><p class="muted">Activate, suspend, or deactivate RentFlow accounts.</p></div>
+  @if (errorMessage()) { <div class="alert error">{{ errorMessage() }}</div> }
+  @if (successMessage()) { <div class="alert success">{{ successMessage() }}</div> }
+  @if (loading()) { <div class="loading">Loading users...</div> }
+  @else {
+    <section class="card table-wrap"><table><thead><tr><th>User</th><th>Role</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead><tbody>
+      @for (user of users(); track user.id) {
+        <tr><td><strong>{{ user.firstName }} {{ user.lastName }}</strong><small>{{ user.email }}</small></td><td>{{ user.role }}</td><td><span class="badge">{{ user.accountStatus }}</span></td><td>{{ user.createdAtUtc | date:'mediumDate' }}</td><td class="actions">
+          <button class="btn btn-primary" [disabled]="busyId() === user.id" (click)="changeStatus(user, 'activate')">Activate</button>
+          <button class="btn btn-secondary" [disabled]="busyId() === user.id" (click)="changeStatus(user, 'suspend')">Suspend</button>
+          <button class="btn btn-danger" [disabled]="busyId() === user.id" (click)="changeStatus(user, 'deactivate')">Deactivate</button>
+        </td></tr>
+      }
+    </tbody></table></section>
+  }
+</main>

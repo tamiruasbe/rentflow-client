@@ -1,0 +1,14 @@
+.topbar { background: #172033; color: #fff; padding: 16px 0; }
+.nav { display: flex; justify-content: space-between; align-items: center; }
+nav { display: flex; gap: 18px; color: #dbeafe; }
+.page { padding: 42px 0 64px; }
+.hero { margin-bottom: 28px; }
+.hero h1 { margin: 4px 0 8px; font-size: clamp(2rem, 5vw, 3.5rem); }
+.eyebrow { color: #2563eb; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.property-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 20px; }
+.property-card { display: flex; flex-direction: column; gap: 8px; }
+.property-card h2, .property-card p { margin: 0; }
+.property-card .btn { align-self: flex-start; margin-top: auto; }
+.muted { color: #6b7280; }
+.alert { padding: 12px; border-radius: 8px; margin-bottom: 18px; }
+.error { background: #fee2e2; color: #991b1b; }

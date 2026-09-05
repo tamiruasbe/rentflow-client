@@ -1,0 +1,83 @@
+<header class="topbar">
+  <div class="page-container topbar-content">
+    <strong>RentFlow Owner</strong>
+    <button class="link-button" (click)="logout()">Sign out</button>
+  </div>
+</header>
+
+<main class="page-container dashboard">
+  <div class="page-heading">
+    <div>
+      <h1>Property management</h1>
+      <p>Create properties, manage units, and publish listings.</p>
+    </div>
+  </div>
+
+  @if (errorMessage()) { <div class="alert error">{{ errorMessage() }}</div> }
+  @if (successMessage()) { <div class="alert success">{{ successMessage() }}</div> }
+
+  <section class="layout">
+    <div class="card">
+      <h2>New property</h2>
+      <form [formGroup]="propertyForm" (ngSubmit)="createProperty()">
+        <label>Name<input class="form-control" formControlName="name"></label>
+        <label>Description<textarea class="form-control" rows="3" formControlName="description"></textarea></label>
+        <label>Type<input class="form-control" formControlName="propertyType" placeholder="Apartment"></label>
+        <label>Address<input class="form-control" formControlName="address"></label>
+        <label>City<input class="form-control" formControlName="city"></label>
+        <label>Amenities<input class="form-control" formControlName="amenities" placeholder="Parking, gym"></label>
+        <button class="btn btn-primary" type="submit" [disabled]="saving()">Create property</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Your properties</h2>
+      @if (loading()) { <div class="loading">Loading...</div> }
+      @else if (!properties().length) { <p>No properties yet.</p> }
+      @else {
+        <div class="property-list">
+          @for (property of properties(); track property.id) {
+            <button class="property-item" [class.selected]="selectedProperty()?.id === property.id" (click)="selectProperty(property)">
+              <strong>{{ property.name }}</strong>
+              <span>{{ property.city }} · {{ property.status }}</span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </section>
+
+  @if (selectedProperty(); as property) {
+    <section class="card detail">
+      <div class="detail-heading">
+        <div><h2>{{ property.name }}</h2><p>{{ property.address }}, {{ property.city }}</p></div>
+        <div class="actions">
+          @if (property.status === 'Draft') { <button class="btn btn-primary" (click)="publishProperty()">Publish</button> }
+          @if (property.status !== 'Archived') { <button class="btn btn-danger" (click)="archiveProperty()">Archive</button> }
+        </div>
+      </div>
+      <p>{{ property.description }}</p>
+      <h3>Units</h3>
+      <div class="unit-grid">
+        @for (unit of units(); track unit.id) {
+          <article class="unit">
+            <strong>{{ unit.nameOrNumber }}</strong>
+            <span>{{ unit.bedrooms }} bed · {{ unit.bathrooms }} bath</span>
+            <span>{{ unit.monthlyRent | currency }} · {{ unit.status }}</span>
+            @if (unit.status === 'Available') { <button class="btn btn-secondary" (click)="markUnavailable(unit)">Mark unavailable</button> }
+            @if (unit.status !== 'Archived' && unit.status !== 'Occupied') { <button class="btn btn-danger" (click)="archiveUnit(unit)">Archive unit</button> }
+          </article>
+        }
+      </div>
+      <form class="unit-form" [formGroup]="unitForm" (ngSubmit)="createUnit()">
+        <h3>Add unit</h3>
+        <input class="form-control" formControlName="nameOrNumber" placeholder="Unit number">
+        <input class="form-control" type="number" formControlName="bedrooms" placeholder="Bedrooms">
+        <input class="form-control" type="number" formControlName="bathrooms" placeholder="Bathrooms">
+        <input class="form-control" type="number" formControlName="monthlyRent" placeholder="Monthly rent">
+        <input class="form-control" type="number" formControlName="securityDeposit" placeholder="Security deposit">
+        <button class="btn btn-primary" type="submit" [disabled]="saving()">Add unit</button>
+      </form>
+    </section>
+  }
+</main>

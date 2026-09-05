@@ -98,11 +98,28 @@ export class AuthService {
     localStorage.setItem(this.refreshTokenKey, response.refreshToken);
 
     localStorage.setItem(this.userKey, JSON.stringify(response.user));
+
+    const role = response.user.role ?? this.readRoleFromToken(response.accessToken);
+    if (role) {
+      localStorage.setItem('rentflow_role', role);
+    }
   }
 
   clearSession(): void {
     localStorage.removeItem(this.accessTokenKey);
     localStorage.removeItem(this.refreshTokenKey);
     localStorage.removeItem(this.userKey);
+    localStorage.removeItem('rentflow_role');
+  }
+
+  private readRoleFromToken(token: string): string | null {
+    try {
+      const payload = token.split('.')[1];
+      const claims = JSON.parse(atob(payload)) as Record<string, unknown>;
+      const roleClaim = claims['role'] ?? claims['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+      return typeof roleClaim === 'string' ? roleClaim : null;
+    } catch {
+      return null;
+    }
   }
 }

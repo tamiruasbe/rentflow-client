@@ -1,0 +1,28 @@
+<header class="topbar">
+  <div class="page-container nav">
+    <strong>RentFlow</strong>
+    <nav><a routerLink="/login">Sign in</a><a routerLink="/register">Create account</a></nav>
+  </div>
+</header>
+<main class="page-container page">
+  <div class="hero">
+    <div><p class="eyebrow">Find your next home</p><h1>Published rental properties</h1><p>Browse homes and compare available units.</p></div>
+  </div>
+  @if (errorMessage()) { <div class="alert error">{{ errorMessage() }}</div> }
+  @if (loading()) { <div class="loading">Loading listings...</div> }
+  @else if (!properties().length) { <section class="card"><p>No published properties are available.</p></section> }
+  @else {
+    <section class="property-grid">
+      @for (property of properties(); track property.id) {
+        <article class="card property-card">
+          <p class="eyebrow">{{ property.propertyType }}</p>
+          <h2>{{ property.name }}</h2>
+          <p class="muted">{{ property.address }}, {{ property.city }}</p>
+          <p>{{ property.description }}</p>
+          @if (property.amenities) { <p class="muted">Amenities: {{ property.amenities }}</p> }
+          <a class="btn btn-primary" [routerLink]="['/properties', property.id]">View property</a>
+        </article>
+      }
+    </section>
+  }
+</main>
