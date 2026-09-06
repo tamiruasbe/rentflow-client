@@ -37,4 +37,8 @@ export class ApplicationService {
   reject(id: string, decisionReason: string): Observable<RentalApplication> {
     return this.http.post<RentalApplication>(`${this.apiUrl}/${id}/reject`, { decisionReason });
   }
+
+  withdraw(id: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/${id}/withdraw`, {});
+  }
 }
