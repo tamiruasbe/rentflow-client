@@ -9,6 +9,7 @@ export interface Property {
   city: string;
   amenities: string;
   status: PropertyStatus | string;
+  currency?: string;
   createdAtUtc: string;
   updatedAtUtc?: string | null;
 }
@@ -21,6 +22,7 @@ export interface PropertyUnit {
   monthlyRent: number;
   securityDeposit: number;
   status: string;
+  currency?: string;
 }
 
 export interface PropertyDetail extends Property {
