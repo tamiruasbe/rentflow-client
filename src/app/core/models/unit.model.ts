@@ -9,6 +9,7 @@ export interface Unit {
   monthlyRent: number;
   securityDeposit: number;
   status: UnitStatus | string;
+  currency?: string;
 }
 
 export interface CreateUnitRequest {
