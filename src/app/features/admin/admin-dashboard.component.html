@@ -1,34 +1,130 @@
-<header class="topbar"><div class="page-container nav"><strong>RentFlow Admin</strong><div><a routerLink="/">Listings</a><button class="link-button" (click)="logout()">Sign out</button></div></div></header>
+<header class="topbar">
+  <div class="page-container nav">
+    <strong>RentFlow Admin</strong>
+    <div>
+      <a routerLink="/">Listings</a><button class="link-button" (click)="logout()">Sign out</button>
+    </div>
+  </div>
+</header>
 <main class="page-container page">
-  <div><h1>User administration</h1><p class="muted">Activate, suspend, or deactivate RentFlow accounts.</p></div>
-  @if (errorMessage()) { <div class="alert error">{{ errorMessage() }}</div> }
-  @if (successMessage()) { <div class="alert success">{{ successMessage() }}</div> }
-  @if (loading()) { <div class="loading">Loading users...</div> }
-  @else {
-    <section class="card table-wrap"><table><thead><tr><th>User</th><th>Role</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead><tbody>
-      @for (user of users(); track user.id) {
-        <tr><td><strong>{{ user.firstName }} {{ user.lastName }}</strong><small>{{ user.email }}</small></td><td>{{ user.role }}</td><td><span class="badge">{{ user.accountStatus }}</span></td><td>{{ user.createdAtUtc | date:'mediumDate' }}</td><td class="actions">
-          <button class="btn btn-primary" [disabled]="busyId() === user.id" (click)="changeStatus(user, 'activate')">Activate</button>
-          <button class="btn btn-secondary" [disabled]="busyId() === user.id" (click)="changeStatus(user, 'suspend')">Suspend</button>
-          <button class="btn btn-danger" [disabled]="busyId() === user.id" (click)="changeStatus(user, 'deactivate')">Deactivate</button>
-        </td></tr>
-      }
-    </tbody></table></section>
+  <div>
+    <h1>User administration</h1>
+    <p class="muted">Activate, suspend, or deactivate RentFlow accounts.</p>
+  </div>
+  @if (errorMessage()) {
+    <div class="alert error">{{ errorMessage() }}</div>
+  }
+  @if (successMessage()) {
+    <div class="alert success">{{ successMessage() }}</div>
+  }
+  @if (loading()) {
+    <div class="loading">Loading users...</div>
+  } @else {
+    <section class="card table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users(); track user.id) {
+            <tr>
+              <td>
+                <strong>{{ user.firstName }} {{ user.lastName }}</strong
+                ><small>{{ user.email }}</small>
+              </td>
+              <td>{{ user.role }}</td>
+              <td>
+                <span class="badge">{{ user.accountStatus }}</span>
+              </td>
+              <td>{{ user.createdAtUtc | date: 'mediumDate' }}</td>
+              <td class="actions">
+                @if (user.accountStatus !== 'Active') {
+                  <button
+                    class="btn btn-primary"
+                    [disabled]="busyId() === user.id"
+                    (click)="changeStatus(user, 'activate')"
+                  >
+                    Activate
+                  </button>
+                }
+                <button
+                  class="btn btn-secondary"
+                  [disabled]="busyId() === user.id"
+                  (click)="changeStatus(user, 'suspend')"
+                >
+                  Suspend
+                </button>
+                <button
+                  class="btn btn-danger"
+                  [disabled]="busyId() === user.id"
+                  (click)="changeStatus(user, 'deactivate')"
+                >
+                  Deactivate
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </section>
   }
   <section class="card table-wrap">
     <h2>All properties</h2>
-    <table><thead><tr><th>Property</th><th>Owner</th><th>Status</th><th>Units</th><th>Actions</th></tr></thead><tbody>
-      @for (property of properties(); track property.id) {
-        <tr><td>{{ property.name }}<small>{{ property.address }}, {{ property.city }}</small></td><td>{{ property.ownerName }}</td><td>{{ property.status }}</td><td>{{ property.occupiedUnitCount }}/{{ property.unitCount }} occupied</td><td><button class="btn btn-secondary" (click)="suspendProperty(property)">Suspend</button><button class="btn btn-danger" (click)="removeProperty(property)">Remove</button></td></tr>
-      }
-    </tbody></table>
+    <table>
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Owner</th>
+          <th>Status</th>
+          <th>Units</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (property of properties(); track property.id) {
+          <tr>
+            <td>
+              {{ property.name }}<small>{{ property.address }}, {{ property.city }}</small>
+            </td>
+            <td>{{ property.ownerName }}</td>
+            <td>{{ property.status }}</td>
+            <td>{{ property.occupiedUnitCount }}/{{ property.unitCount }} occupied</td>
+            <td>
+              <button class="btn btn-secondary" (click)="suspendProperty(property)">Suspend</button
+              ><button class="btn btn-danger" (click)="removeProperty(property)">Remove</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
   </section>
   <section class="card table-wrap">
     <h2>All applications</h2>
-    <table><thead><tr><th>Tenant</th><th>Property</th><th>Status</th><th>Submitted</th></tr></thead><tbody>
-      @for (application of applications(); track application.id) {
-        <tr><td>{{ application.tenantName }}</td><td>{{ application.propertyName }} — {{ application.unitNameOrNumber }}</td><td>{{ application.status }}</td><td>{{ application.submittedAtUtc | date:'mediumDate' }}</td></tr>
-      }
-    </tbody></table>
+    <table>
+      <thead>
+        <tr>
+          <th>Tenant</th>
+          <th>Property</th>
+          <th>Status</th>
+          <th>Submitted</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (application of applications(); track application.id) {
+          <tr>
+            <td>{{ application.tenantName }}</td>
+            <td>{{ application.propertyName }} — {{ application.unitNameOrNumber }}</td>
+            <td>{{ application.status }}</td>
+            <td>{{ application.submittedAtUtc | date: 'mediumDate' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
   </section>
 </main>
