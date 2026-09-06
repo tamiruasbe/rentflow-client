@@ -11,3 +11,27 @@ export interface AdminUser {
   createdAtUtc: string;
   updatedAtUtc?: string | null;
 }
+
+export interface AdminProperty {
+  id: string;
+  ownerId: string;
+  ownerName?: string | null;
+  name: string;
+  address: string;
+  city: string;
+  status: string;
+  unitCount: number;
+  occupiedUnitCount: number;
+}
+
+export interface AdminApplication {
+  id: string;
+  status: string;
+  tenantId: string;
+  tenantName?: string | null;
+  propertyId: string;
+  propertyName: string;
+  unitNameOrNumber: string;
+  submittedAtUtc: string;
+  reviewedAtUtc?: string | null;
+}
