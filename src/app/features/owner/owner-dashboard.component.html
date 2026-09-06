@@ -54,6 +54,7 @@
         <div class="actions">
           @if (property.status === 'Draft') { <button class="btn btn-primary" (click)="publishProperty()">Publish</button> }
           @if (property.status !== 'Archived') { <button class="btn btn-danger" (click)="archiveProperty()">Archive</button> }
+          @if (property.status !== 'Archived') { <button class="btn btn-danger" (click)="deleteProperty()">Delete</button> }
         </div>
       </div>
       <p>{{ property.description }}</p>
@@ -63,7 +64,7 @@
           <article class="unit">
             <strong>{{ unit.nameOrNumber }}</strong>
             <span>{{ unit.bedrooms }} bed · {{ unit.bathrooms }} bath</span>
-            <span>{{ unit.monthlyRent | currency }} · {{ unit.status }}</span>
+            <span>{{ unit.monthlyRent | currency:'ETB' }} · {{ unit.status }}</span>
             @if (unit.status === 'Available') { <button class="btn btn-secondary" (click)="markUnavailable(unit)">Mark unavailable</button> }
             @if (unit.status !== 'Archived' && unit.status !== 'Occupied') { <button class="btn btn-danger" (click)="archiveUnit(unit)">Archive unit</button> }
           </article>
@@ -96,6 +97,7 @@
                 <button class="btn btn-danger" [disabled]="reviewingApplicationId() === application.id" (click)="reviewApplication(application, 'reject')">Reject</button>
               </div>
             }
+            @if (application.tenantFullName) { <span>Tenant: {{ application.tenantFullName }} · {{ application.tenantEmail }} · {{ application.tenantPhoneNumber }}</span> }
           </article>
         }
       </div>
