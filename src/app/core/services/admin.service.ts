@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-import { AdminUser } from '../models/admin-user.model';
+import { AdminApplication, AdminProperty, AdminUser } from '../models/admin-user.model';
 
 export interface AccountStatusChange {
   message: string;
@@ -30,5 +30,21 @@ export class AdminService {
 
   deactivateUser(id: string): Observable<AccountStatusChange> {
     return this.http.post<AccountStatusChange>(`${this.apiUrl}/users/${id}/deactivate`, {});
+  }
+
+  getProperties(): Observable<AdminProperty[]> {
+    return this.http.get<AdminProperty[]>(`${this.apiUrl}/properties`);
+  }
+
+  getApplications(): Observable<AdminApplication[]> {
+    return this.http.get<AdminApplication[]>(`${this.apiUrl}/applications`);
+  }
+
+  suspendProperty(id: string): Observable<unknown> {
+    return this.http.post(`${this.apiUrl}/properties/${id}/suspend`, {});
+  }
+
+  removeProperty(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/properties/${id}`);
   }
 }
