@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 
-import { AdminUser } from '../../core/models/admin-user.model';
+import { AdminApplication, AdminProperty, AdminUser } from '../../core/models/admin-user.model';
 import { AdminService } from '../../core/services/admin.service';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -18,12 +18,33 @@ export class AdminDashboardComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   readonly users = signal<AdminUser[]>([]);
+  readonly properties = signal<AdminProperty[]>([]);
+  readonly applications = signal<AdminApplication[]>([]);
   readonly loading = signal(true);
   readonly busyId = signal('');
   readonly errorMessage = signal('');
   readonly successMessage = signal('');
 
-  constructor() { this.loadUsers(); }
+  constructor() {
+    this.loadUsers();
+    this.adminService.getProperties().subscribe({ next: (items) => this.properties.set(items) });
+    this.adminService.getApplications().subscribe({ next: (items) => this.applications.set(items) });
+  }
+
+  suspendProperty(property: AdminProperty): void {
+    this.adminService.suspendProperty(property.id).subscribe({
+      next: () => this.properties.update((items) => items.map((item) => item.id === property.id ? { ...item, status: 'Suspended' } : item)),
+      error: (error) => this.errorMessage.set(error?.error?.message ?? 'Unable to suspend property.'),
+    });
+  }
+
+  removeProperty(property: AdminProperty): void {
+    if (!confirm(`Remove ${property.name}?`)) return;
+    this.adminService.removeProperty(property.id).subscribe({
+      next: () => this.properties.update((items) => items.filter((item) => item.id !== property.id)),
+      error: (error) => this.errorMessage.set(error?.error?.message ?? 'Unable to remove property.'),
+    });
+  }
 
   loadUsers(): void {
     this.adminService.getUsers().subscribe({
