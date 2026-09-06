@@ -12,6 +12,16 @@ export interface RentalApplication {
   submittedAtUtc: string;
   reviewedAtUtc?: string | null;
   decisionReason?: string | null;
+  tenantFullName?: string | null;
+  tenantPhoneNumber?: string | null;
+  tenantEmail?: string | null;
+  ownerFullName?: string | null;
+  ownerPhoneNumber?: string | null;
+  propertyDescription?: string;
+  propertyType?: string;
+  propertyAddress?: string;
+  propertyCity?: string;
+  propertyStatus?: string;
 }
 
 export interface CreateRentalApplicationRequest {
