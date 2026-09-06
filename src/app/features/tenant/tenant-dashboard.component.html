@@ -16,7 +16,7 @@
     <h2>My applications</h2>
     @if (!applications().length) { <p class="muted">You have not submitted any applications.</p> }
     @for (item of applications(); track item.id) {
-      <div class="application-row"><strong>{{ item.propertyName }} · {{ item.unitNameOrNumber }}</strong><span>{{ item.status }}</span><small>{{ item.decisionReason }}</small></div>
+      <div class="application-row"><strong>{{ item.propertyName }} · {{ item.unitNameOrNumber }}</strong><span>{{ item.status }}</span><small>{{ item.decisionReason }}</small><span>Owner: {{ item.ownerFullName }} · {{ item.ownerPhoneNumber }}</span>@if (item.status === 'Submitted' || item.status === 'UnderReview') { <button class="btn btn-secondary" (click)="withdraw(item)">Withdraw application</button> }</div>
     }
   </section>
   @if (lookupError()) { <div class="alert error">{{ lookupError() }}</div> }
