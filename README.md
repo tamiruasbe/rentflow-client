@@ -1,59 +1,210 @@
-# RentflowClient
+# RentFlow Client
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.8.
+The RentFlow client is an Angular application for a property rental and tenancy management platform. It provides role-aware workflows for public visitors, tenants, property owners, and administrators while delegating authentication, authorization, and business rules to the RentFlow API.
 
-## Development server
+## Product Scope
 
-To start a local development server, run:
+Implemented client workflows include:
 
-```bash
-ng serve
-```
+- Public discovery of published properties and available units.
+- Tenant registration, authentication, application submission, tracking, and withdrawal.
+- Owner property and unit management.
+- Owner review, approval, and rejection of rental applications.
+- Administrator user-status management and platform oversight.
+- JWT authentication with access-token refresh handling.
+- Role-protected routes for Owner, Tenant, and Admin areas.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+The client does not bypass backend rules. The API remains authoritative for identity, permissions, ownership checks, resource state, and validation.
 
-## Code scaffolding
+## Technology Stack
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- Angular 22
+- TypeScript 6
+- RxJS 7
+- Angular Router
+- Angular Reactive Forms
+- Vitest through the Angular CLI
 
-```bash
-ng generate component component-name
-```
+## Prerequisites
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- Node.js compatible with Angular 22
+- npm 10 or later
+- A running RentFlow API
 
-```bash
-ng generate --help
-```
+The backend repository and setup instructions are maintained separately in `rentflow-api`.
 
-## Building
+## Installation
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Install the exact dependency versions recorded in the lockfile:
 
 ```bash
-ng test
+npm ci
 ```
 
-## Running end-to-end tests
+## Environment Configuration
 
-For end-to-end (e2e) testing, run:
+Angular uses file replacement for environment-specific API configuration:
+
+| Build mode  | Configuration file                            | Default API URL                 |
+| ----------- | --------------------------------------------- | ------------------------------- |
+| Development | `src/environments/environment.development.ts` | `http://localhost:5118/api/v1`  |
+| Production  | `src/environments/environment.ts`             | `https://localhost:7249/api/v1` |
+
+The local API CORS policy allows requests from:
+
+```text
+http://localhost:4200
+http://127.0.0.1:4200
+```
+
+Do not place passwords, JWT signing keys, access tokens, refresh tokens, or other secrets in the client source tree.
+
+## Local Development
+
+Start the API first using its documented launch profile. Then, from this repository, run:
 
 ```bash
-ng e2e
+npm start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+The development server is available at:
 
-## Additional Resources
+```text
+http://localhost:4200
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Application Routes
+
+| Route             | Access        | Responsibility                                       |
+| ----------------- | ------------- | ---------------------------------------------------- |
+| `/`               | Public        | Published property listings                          |
+| `/properties/:id` | Public        | Property details, units, and tenant application form |
+| `/login`          | Public        | Account authentication                               |
+| `/register`       | Public        | Owner or tenant registration                         |
+| `/owner`          | Active Owner  | Properties, units, and rental applications           |
+| `/tenant`         | Active Tenant | Tenant application tracking                          |
+| `/admin`          | Active Admin  | User and platform administration                     |
+
+Route guards improve the user experience, but they are not a security boundary. Every protected request is also authorized by the API.
+
+## Role Workflows
+
+### Public visitor
+
+1. Browse published properties.
+2. Inspect property details and available units.
+3. Register or sign in to continue as a tenant or owner.
+
+### Tenant
+
+1. Register an account.
+2. Wait for administrator activation.
+3. Sign in again after activation.
+4. Submit an application for an available unit.
+5. Track or withdraw an eligible application.
+
+### Owner
+
+1. Register an account.
+2. Wait for administrator activation.
+3. Create and manage properties.
+4. Create and manage units.
+5. Publish a property.
+6. Review, approve, or reject tenant applications.
+
+### Administrator
+
+1. Review registered users.
+2. Activate, suspend, or deactivate accounts.
+3. Review platform properties and applications.
+
+## Project Structure
+
+```text
+src/
+  app/
+    core/
+      guards/          Route authorization
+      interceptors/    JWT request and refresh handling
+      models/          API-aligned TypeScript models
+      services/        Backend-facing HTTP services
+    features/
+      auth/            Login and registration
+      admin/           Administrator dashboard
+      owner/           Owner dashboard
+      public/          Property listings and details
+      tenant/          Tenant dashboard
+  environments/        Development and production API configuration
+  styles.scss          Global styles
+```
+
+Feature components should use core services and models rather than duplicating HTTP calls or API contracts inside templates.
+
+## Validation Commands
+
+Build the production bundle:
+
+```bash
+npm run build
+```
+
+Run unit tests:
+
+```bash
+npm test
+```
+
+Run the development server:
+
+```bash
+npm start
+```
+
+Before committing:
+
+```bash
+git status
+```
+
+## Demonstration Flow
+
+For a project demonstration, use this end-to-end sequence:
+
+```text
+Browse properties
+  -> Register tenant
+  -> Administrator activates tenant
+  -> Tenant signs in again
+  -> Submit rental application
+  -> Owner reviews application
+  -> Owner approves or rejects application
+```
+
+Run the API and client in separate terminals. Do not display credentials, tokens, or local secret configuration during screen recording.
+
+## Known Limitations
+
+The following capabilities are outside the current client scope:
+
+- Online payments
+- Maintenance management
+- Notifications and document management
+- Server-side property search and filtering
+- Dedicated tenancy management screens
+- Automated end-to-end browser tests
+
+Approved applications create tenancies in the API, but the client does not yet expose a dedicated tenancy dashboard.
+
+## Contribution Guidelines
+
+Keep changes focused on one feature or maintenance concern. Before opening a pull request:
+
+1. Run `npm run build`.
+2. Run `npm test` when tests cover the changed area.
+3. Verify the affected workflow against a running API.
+4. Review the diff for credentials, generated files, and unrelated formatting changes.
+5. Use a commit message that describes the user-visible or architectural change.
+
+## Related Repository
+
+The ASP.NET Core backend is maintained in the sibling `rentflow-api` repository.

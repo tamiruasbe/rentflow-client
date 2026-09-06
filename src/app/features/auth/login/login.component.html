@@ -1,0 +1,61 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>Welcome to RentFlow</h1>
+      <p>Sign in to manage your rental account.</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="alert-error">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-group">
+        <label class="form-label" for="email"> Email </label>
+
+        <input
+          id="email"
+          type="email"
+          class="form-control"
+          formControlName="email"
+          placeholder="Enter your email"
+        />
+
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <div class="error-message">Please enter a valid email address.</div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password"> Password </label>
+
+        <input
+          id="password"
+          type="password"
+          class="form-control"
+          formControlName="password"
+          placeholder="Enter your password"
+        />
+
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <div class="error-message">Password is required.</div>
+        }
+      </div>
+
+      <button type="submit" class="btn btn-primary login-button" [disabled]="loading()">
+        @if (loading()) {
+          Signing in...
+        } @else {
+          Sign In
+        }
+      </button>
+    </form>
+
+    <div class="register-link">
+      Don't have an account?
+      <a routerLink="/register">Create one</a>
+    </div>
+  </div>
+</div>
