@@ -148,6 +148,20 @@ export class OwnerDashboardComponent {
     this.changePropertyStatus('archive');
   }
 
+  deleteProperty(): void {
+    const property = this.selectedProperty();
+    if (!property || !confirm('Delete this property permanently?')) return;
+
+    this.propertyService.deleteProperty(property.id).subscribe({
+      next: () => {
+        this.properties.update((items) => items.filter((item) => item.id !== property.id));
+        this.selectedProperty.set(null);
+        this.successMessage.set('Property deleted.');
+      },
+      error: (error) => this.showError(error, 'Unable to delete the property. Occupied properties cannot be deleted.'),
+    });
+  }
+
   markUnavailable(unit: Unit): void {
     this.propertyService.markUnavailable(unit.id).subscribe({
       next: (updated) => this.replaceUnit(updated),
