@@ -47,6 +47,13 @@ export class TenantDashboardComponent {
     });
   }
 
+  withdraw(application: RentalApplication): void {
+    this.applicationService.withdraw(application.id).subscribe({
+      next: () => this.applications.update((items) => items.map((item) => item.id === application.id ? { ...item, status: 'Withdrawn' } : item)),
+      error: () => this.lookupError.set('Unable to withdraw this application.'),
+    });
+  }
+
   logout(): void {
     this.authService.logout().subscribe({
       next: () => this.finishLogout(),
