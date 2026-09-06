@@ -15,4 +15,20 @@
       }
     </tbody></table></section>
   }
+  <section class="card table-wrap">
+    <h2>All properties</h2>
+    <table><thead><tr><th>Property</th><th>Owner</th><th>Status</th><th>Units</th><th>Actions</th></tr></thead><tbody>
+      @for (property of properties(); track property.id) {
+        <tr><td>{{ property.name }}<small>{{ property.address }}, {{ property.city }}</small></td><td>{{ property.ownerName }}</td><td>{{ property.status }}</td><td>{{ property.occupiedUnitCount }}/{{ property.unitCount }} occupied</td><td><button class="btn btn-secondary" (click)="suspendProperty(property)">Suspend</button><button class="btn btn-danger" (click)="removeProperty(property)">Remove</button></td></tr>
+      }
+    </tbody></table>
+  </section>
+  <section class="card table-wrap">
+    <h2>All applications</h2>
+    <table><thead><tr><th>Tenant</th><th>Property</th><th>Status</th><th>Submitted</th></tr></thead><tbody>
+      @for (application of applications(); track application.id) {
+        <tr><td>{{ application.tenantName }}</td><td>{{ application.propertyName }} — {{ application.unitNameOrNumber }}</td><td>{{ application.status }}</td><td>{{ application.submittedAtUtc | date:'mediumDate' }}</td></tr>
+      }
+    </tbody></table>
+  </section>
 </main>
