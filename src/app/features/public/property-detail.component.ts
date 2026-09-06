@@ -47,7 +47,13 @@ export class PropertyDetailComponent {
   }
 
   isTenant(): boolean {
-    return this.authService.getStoredUser()?.role?.toLowerCase() === 'tenant';
+    const user = this.authService.getStoredUser();
+    return user?.role?.toLowerCase() === 'tenant' &&
+      user.accountStatus?.toString().toLowerCase() === 'active';
+  }
+
+  canApply(): boolean {
+    return this.isTenant() && this.authService.isAuthenticated();
   }
 
   apply(unitId: string): void {
