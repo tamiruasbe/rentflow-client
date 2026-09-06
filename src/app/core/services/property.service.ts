@@ -52,6 +52,10 @@ export class PropertyService {
     return this.http.post<Property>(`${this.apiUrl}/owner/properties/${id}/archive`, {});
   }
 
+  deleteProperty(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/owner/properties/${id}`);
+  }
+
   getUnits(propertyId: string): Observable<Unit[]> {
     return this.http.get<Unit[]>(`${this.apiUrl}/owner/properties/${propertyId}/units`);
   }
