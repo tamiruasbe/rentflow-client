@@ -21,6 +21,7 @@ export class TenantDashboardComponent {
   private readonly router = inject(Router);
   readonly properties = signal<Property[]>([]);
   readonly application = signal<RentalApplication | null>(null);
+  readonly applications = signal<RentalApplication[]>([]);
   readonly lookupError = signal('');
   readonly loading = signal(true);
   applicationId = '';
@@ -29,6 +30,10 @@ export class TenantDashboardComponent {
     this.propertyService.getPublished().subscribe({
       next: (properties) => { this.properties.set(properties); this.loading.set(false); },
       error: () => this.loading.set(false),
+    });
+    this.applicationService.getMine().subscribe({
+      next: (applications) => this.applications.set(applications),
+      error: () => undefined,
     });
   }
 

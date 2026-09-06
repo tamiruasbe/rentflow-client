@@ -2,6 +2,8 @@ export interface RentalApplication {
   id: string;
   tenantId: string;
   unitId: string;
+  unitNameOrNumber: string;
+  propertyName: string;
   employmentInformation: string;
   numberOfOccupants: number;
   preferredMoveInDate: string;
@@ -10,4 +12,12 @@ export interface RentalApplication {
   submittedAtUtc: string;
   reviewedAtUtc?: string | null;
   decisionReason?: string | null;
+}
+
+export interface CreateRentalApplicationRequest {
+  unitId: string;
+  employmentInformation: string;
+  numberOfOccupants: number;
+  preferredMoveInDate: string;
+  message: string;
 }

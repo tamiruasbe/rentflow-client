@@ -20,6 +20,11 @@ label input, label textarea { display: block; margin-top: 6px; }
 .unit { border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px; }
 .unit .btn { margin-top: 10px; width: 100%; font-size: 12px; }
 .unit-form { margin-top: 24px; display: grid; grid-template-columns: repeat(5, 1fr) auto; gap: 10px; align-items: end; }
+.applications { margin-top: 24px; }
+.application-list { display: grid; gap: 12px; }
+.application { display: grid; grid-template-columns: 1fr auto auto; gap: 16px; align-items: center; border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px; }
+.application span { display: block; color: #6b7280; font-size: 14px; margin-top: 4px; }
+.application-status { color: #2563eb !important; font-weight: 700; }
 .alert { padding: 12px; border-radius: 8px; margin-bottom: 18px; }
 .error { background: #fee2e2; color: #991b1b; }
 .success { background: #dcfce7; color: #166534; }

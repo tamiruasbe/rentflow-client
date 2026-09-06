@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 
 import { PropertyService } from '../../core/services/property.service';
 import { AuthService } from '../../core/services/auth.service';
+import { ApplicationService } from '../../core/services/application.service';
+import { RentalApplication } from '../../core/models/application.model';
 import { Property } from '../../core/models/property.model';
 import { Unit } from '../../core/models/unit.model';
 
@@ -19,6 +21,7 @@ export class OwnerDashboardComponent {
   private readonly fb = inject(FormBuilder);
   private readonly propertyService = inject(PropertyService);
   private readonly authService = inject(AuthService);
+  private readonly applicationService = inject(ApplicationService);
   private readonly router = inject(Router);
 
   readonly properties = signal<Property[]>([]);
@@ -28,6 +31,8 @@ export class OwnerDashboardComponent {
   readonly saving = signal(false);
   readonly errorMessage = signal('');
   readonly successMessage = signal('');
+  readonly applications = signal<RentalApplication[]>([]);
+  readonly reviewingApplicationId = signal('');
 
   readonly propertyForm = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(200)]],
@@ -48,6 +53,32 @@ export class OwnerDashboardComponent {
 
   constructor() {
     this.loadProperties();
+    this.loadApplications();
+  }
+
+  loadApplications(): void {
+    this.applicationService.getOwnerApplications().subscribe({
+      next: (applications) => this.applications.set(applications),
+      error: (error) => this.showError(error, 'Unable to load rental applications.'),
+    });
+  }
+
+  reviewApplication(application: RentalApplication, decision: 'approve' | 'reject'): void {
+    this.reviewingApplicationId.set(application.id);
+    const request = decision === 'approve'
+      ? this.applicationService.approve(application.id)
+      : this.applicationService.reject(application.id, 'Application rejected by owner.');
+    request.subscribe({
+      next: (updated) => {
+        this.applications.update((items) => items.map((item) => item.id === updated.id ? updated : item));
+        this.reviewingApplicationId.set('');
+        this.successMessage.set(`Application ${decision}d.`);
+      },
+      error: (error) => {
+        this.reviewingApplicationId.set('');
+        this.showError(error, `Unable to ${decision} the application.`);
+      },
+    });
   }
 
   loadProperties(): void {

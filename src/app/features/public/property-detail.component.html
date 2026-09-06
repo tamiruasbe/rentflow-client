@@ -2,6 +2,7 @@
 <main class="page-container page">
   @if (loading()) { <div class="loading">Loading property...</div> }
   @if (errorMessage()) { <div class="alert error">{{ errorMessage() }}</div> }
+  @if (successMessage()) { <div class="alert success">{{ successMessage() }}</div> }
   @if (property(); as item) {
     <section class="card intro">
       <p class="eyebrow">{{ item.propertyType }}</p>
@@ -15,7 +16,17 @@
       @if (!item.units.length) { <p class="muted">No units are currently listed.</p> }
       <div class="unit-grid">
         @for (unit of item.units; track unit.id) {
-          <article class="unit"><h3>{{ unit.nameOrNumber }}</h3><p>{{ unit.bedrooms }} bed · {{ unit.bathrooms }} bath</p><strong>{{ unit.monthlyRent | currency }} / month</strong><span class="status">{{ unit.status }}</span></article>
+          <article class="unit"><h3>{{ unit.nameOrNumber }}</h3><p>{{ unit.bedrooms }} bed · {{ unit.bathrooms }} bath</p><strong>{{ unit.monthlyRent | currency }} / month</strong><span class="status">{{ unit.status }}</span>
+            @if (isTenant() && unit.status === 'Available') {
+              <form [formGroup]="applicationForm" (ngSubmit)="apply(unit.id)" class="application-form">
+                <input class="form-control" formControlName="employmentInformation" placeholder="Employment information">
+                <input class="form-control" type="number" formControlName="numberOfOccupants" min="1" placeholder="Occupants">
+                <input class="form-control" type="date" formControlName="preferredMoveInDate">
+                <textarea class="form-control" rows="2" formControlName="message" placeholder="Message"></textarea>
+                <button class="btn btn-primary" type="submit" [disabled]="applyingUnitId() === unit.id">Apply for this unit</button>
+              </form>
+            }
+          </article>
         }
       </div>
     </section>

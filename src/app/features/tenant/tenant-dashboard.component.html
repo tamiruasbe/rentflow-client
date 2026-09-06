@@ -12,5 +12,12 @@
       @if (application(); as item) { <div class="result"><strong>Status: {{ item.status }}</strong><span>Move-in: {{ item.preferredMoveInDate }}</span><span>{{ item.message }}</span></div> }
     </form>
   </section>
+  <section class="card applications">
+    <h2>My applications</h2>
+    @if (!applications().length) { <p class="muted">You have not submitted any applications.</p> }
+    @for (item of applications(); track item.id) {
+      <div class="application-row"><strong>{{ item.propertyName }} · {{ item.unitNameOrNumber }}</strong><span>{{ item.status }}</span><small>{{ item.decisionReason }}</small></div>
+    }
+  </section>
   @if (lookupError()) { <div class="alert error">{{ lookupError() }}</div> }
 </main>

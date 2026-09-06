@@ -80,4 +80,25 @@
       </form>
     </section>
   }
+
+  <section class="card applications">
+    <h2>Rental applications</h2>
+    @if (!applications().length) { <p>No applications yet.</p> }
+    @else {
+      <div class="application-list">
+        @for (application of applications(); track application.id) {
+          <article class="application">
+            <div><strong>{{ application.propertyName }} · {{ application.unitNameOrNumber }}</strong><span>{{ application.numberOfOccupants }} occupant(s) · move in {{ application.preferredMoveInDate }}</span><span>{{ application.message }}</span></div>
+            <span class="application-status">{{ application.status }}</span>
+            @if (application.status === 'Submitted' || application.status === 'UnderReview') {
+              <div class="actions">
+                <button class="btn btn-primary" [disabled]="reviewingApplicationId() === application.id" (click)="reviewApplication(application, 'approve')">Approve</button>
+                <button class="btn btn-danger" [disabled]="reviewingApplicationId() === application.id" (click)="reviewApplication(application, 'reject')">Reject</button>
+              </div>
+            }
+          </article>
+        }
+      </div>
+    }
+  </section>
 </main>
